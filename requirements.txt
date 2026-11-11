@@ -1,3 +1,5 @@
 remotezip
 Pillow
 pandas
+numpy
+matplotlib
