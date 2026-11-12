@@ -1,0 +1,4 @@
+split,rock,paper,scissors,total_images,share_of_images,people
+train,1038,1091,1048,3177,0.706,1694
+val,238,221,235,694,0.154,364
+test,224,188,217,629,0.14,364
