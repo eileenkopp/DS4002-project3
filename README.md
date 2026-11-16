@@ -11,3 +11,4 @@ xxxxx
 ## Section 3: Instructions for Reproducing Results
 
 ## References
+[x] A. Kapitanov, K. Kvanchiani, A. Nagaev, R. Kraynov, and A. Makhliarchuk, “HaGRID – HAnd Gesture Recognition Image Dataset,” GitHub repository, 2022. [Online]. Available: https://github.com/hukenovs/hagrid. Accessed: Nov. 6, 2026.
