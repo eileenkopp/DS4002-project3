@@ -1,3 +1,6 @@
+"""
+Implements the rock paper scissors logic needed in rps_game.py
+"""
 import random
 
 MOVES = ["rock", "paper", "scissors"]

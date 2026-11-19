@@ -1,3 +1,8 @@
+"""
+"Runs the interactive rock paper scissors game. Uses computer's default webcam, players follow displayed 
+directions in the game to play against a random computer opponent. 
+"""
+
 import cv2
 import time
 
@@ -6,6 +11,8 @@ from game_logic import (
     determine_winner,
     GameScore
 )
+
+#TODO: add instructions / welcome screen? 
 
 def main():
     # Open default webcam
@@ -64,7 +71,7 @@ def main():
 
         if state == "READY": 
             cv2.putText(frame,"Press SPACE to start!",(20, 80),cv2.FONT_HERSHEY_SIMPLEX,0.8,(255, 255, 255),2)
-            
+
         if state == "COUNTDOWN":
             elapsed = time.monotonic() - countdown_start
 
