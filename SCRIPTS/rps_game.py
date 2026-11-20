@@ -18,7 +18,26 @@ from gesture_classifier import (
     predict_gesture
 )
 
+def draw_centered_text(frame, text, y, font_scale=1.0,
+                       color=(255, 255, 255), thickness=2):
+    """Draw text horizontally centered at a given y-coordinate."""
+    height, width = frame.shape[:2]
 
+    font = cv2.FONT_HERSHEY_SIMPLEX
+
+    # Calculate the text width and height
+    (text_width, text_height), baseline = cv2.getTextSize(
+        text, font, font_scale, thickness
+    )
+
+    # Center text horizontally
+    x = (width - text_width) // 2
+
+    cv2.putText(
+        frame, text, (x, y),
+        font, font_scale, color, thickness
+    )
+    
 def main():
     # Load trained CNN once at startup
     print("Loading gesture classifier...")
@@ -80,11 +99,9 @@ def main():
 
         # ---------------- READY ----------------
         if state == "READY":
-            cv2.putText(
+            draw_centered_text(
                 frame, "Press SPACE to start!",
-                (20, 80),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.8, (255, 255, 255), 2
+                85, font_scale=1.1, thickness=3
             )
 
         # ---------------- COUNTDOWN ----------------
@@ -94,97 +111,103 @@ def main():
             if elapsed < 3:
                 number = 3 - int(elapsed)
 
-                cv2.putText(
+                draw_centered_text(
                     frame, str(number),
-                    (width // 2 - 30, 80),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    2, (0, 255, 255), 4
+                    height // 2,
+                    font_scale=3.0,
+                    color=(0, 255, 255),
+                    thickness=6
                 )
-
             else:
                 state = "CAPTURE"
 
         # ---------------- CAPTURE ----------------
         if state == "CAPTURE":
-
+        
             # Predict player's hand gesture using CNN
             player_move, confidence = predict_gesture(
                 model, hand_crop
             )
-
+        
             print(
                 f"Predicted: {player_move} "
                 f"(confidence: {confidence:.2%})"
-            )
-
+                )
+        
             # Determine winner
-            winner = determine_winner(
-                player_move, computer_move
-            )
-
+            winner = determine_winner(player_move, computer_move)
+        
             # Update score
             score.update(winner)
-
+        
             # Move to results screen
             state = "RESULT"
 
         # ---------------- RESULT ----------------
         if state == "RESULT":
 
-            cv2.putText(
-                frame,
-                f"You: {player_move.upper()} "
-                f"({confidence:.1%})",
-                (20, 80),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.8, (255, 255, 255), 2
-            )
-
-            cv2.putText(
-                frame,
-                f"Computer: {computer_move.upper()}",
-                (20, 120),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.8, (255, 255, 255), 2
-            )
-
             if winner == "tie":
                 result_text = "IT'S A TIE!"
+                result_color = (0, 255, 255)
+
             elif winner == "player":
                 result_text = "YOU WIN!"
+                result_color = (0, 255, 0)
+
             else:
                 result_text = "COMPUTER WINS!"
+                result_color = (0, 0, 255)
 
-            cv2.putText(
+            # Large centered result
+            draw_centered_text(
                 frame, result_text,
-                (20, 170),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1, (0, 255, 255), 3
+                90,
+                font_scale=1.5,
+                color=result_color,
+                thickness=4
+            )
+
+            # Player and computer moves
+            draw_centered_text(
+                frame,
+                f"You: {player_move.upper()} ({confidence:.0%})",
+                140,
+                font_scale=0.9,
+                thickness=2
+            )
+
+            draw_centered_text(
+                frame,
+                f"Computer: {computer_move.upper()}",
+                180,
+                font_scale=0.9,
+                thickness=2
             )
 
         # ---------------- SCOREBOARD ----------------
         score_text = (
-            f"You: {score.player} | "
-            f"Computer: {score.computer} | "
+            f"You: {score.player}   |   "
+            f"Computer: {score.computer}   |   "
             f"Ties: {score.ties}"
         )
 
-        cv2.putText(
+        draw_centered_text(
             frame, score_text,
-            (20, height - 60),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.7, (255, 255, 255), 2
+            height - 65,
+            font_scale=0.9,
+            color=(0, 255, 255),
+            thickness=3
         )
 
-        # Controls
-        cv2.putText(
+        # ---------------- CONTROLS ----------------
+        draw_centered_text(
             frame,
-            "SPACE: Play | R: Reset | Q: Quit",
-            (20, height - 20),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.6, (255, 255, 255), 2
+            "SPACE: Play  |  R: Reset  |  Q: Quit",
+            height - 20,
+            font_scale=0.7,
+            thickness=2
         )
-
+        
         # Display completed frame
         cv2.imshow("Rock Paper Scissors", frame)
 
