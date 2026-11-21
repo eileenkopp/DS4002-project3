@@ -1,4 +1,8 @@
-
+"""
+Loads the trained MobileNetV2 CNN and classifies hand gestures as rock, paper, or scissors.
+Preprocesses webcam images to match the model's input requirements and returns the
+predicted gesture along with its confidence score.
+"""
 from pathlib import Path
 
 import cv2
