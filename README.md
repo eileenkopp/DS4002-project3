@@ -30,6 +30,16 @@ The platform we used:
       -  paper_meta.csv
       -  scissor_meta.csv
     - rps_manifest.csv
+    - annotations.zip (**too large to upload**, see `DATA/README.md` for more info)
+    - ann (**too large to upload**, see `DATA/README.md` for more info)
+      - annotations
+        - test (contains a json file of each category)
+          - call.json
+          - .... (json files by category)
+        - train (same as test folder)
+          - ... (json files by category)
+        - val (same as test and train folder)
+          - ... (json files by category)
 - OUTPUT
     - brightness_distributions.png
     - relative_hand_area_distributions.png
