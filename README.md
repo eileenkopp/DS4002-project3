@@ -4,18 +4,18 @@
 This repository contains our data, scripts, and results/output for our project on image data: photos of hand gestures relabeled as rock, paper, and scissors. We start with the HaGRID hand-gesture dataset [1], [2] and process it into our own dataset by selecting the fist, palm, and peace gestures, relabeling them as rock, paper, and scissors, cropping each hand from its bounding box, and splitting the images by person into training, validation, and test sets. We then fine-tune MobileNetV2, a pretrained convolutional neural network, to see whether it can classify the gestures with at least 80% accuracy on people it was not trained on, and save the trained model, a confusion matrix, and a classification report into the output folder. Finally, we use the model in an interactive webcam game where a player competes against the computer in rock-paper-scissors.
 
 ## Section 1: Software and Platform Section
-- We used Python for this project, specifically Python 3.14.7
+- We used Python for this project, specifically Python 3.13
+- Use Python 3.12 or 3.13. TensorFlow 2.21 does not provide a build for Python 3.14, so `pip install tensorflow` fails on 3.14.
 
-Add-on packages that need to be installed with the software (can check requirements.txt to see exact versions):
-- remotezip
-- Pillow
-- pandas
-- numpy
-- matplotlib
-- scikit-learn
-- opencv-python
-- random
-- tensorflow
+Add-on packages that need to be installed with the software:
+- remotezip 0.12.6
+- pillow 13.0.0
+- pandas 3.1.1
+- numpy 2.5.5
+- matplotlib 3.11.2
+- scikit-learn 1.9.1
+- opencv-python 5.1.0.95
+- tensorflow 2.21.0
 
 The platform we used: 
 - Mac
@@ -65,13 +65,13 @@ The platform we used:
    - Clone the repo to your local and open it up in your choice of IDE
    - Download the requirements listed in the `requirements.txt` file that is located in the top level directory
 **NOTE**: All scripts are run from the top-level directory aka root directory aka the directory that contains `DATA`, `OUTPUT`, `SCRIPTS` folders
-2. Run the `eda.py script`, this generates the `annotations.zip` file and `ann` folder.
+2. Run the `eda.py` script, this downloads the HaGRID annotations (creating the `annotations.zip` file and `ann` folder), then downloads and crops the rock, paper, and scissors hand images into `DATA/rps_data`.
     - run: python3 SCRIPTS/eda.py
 3. Next run `eda_plot.py` to generate the eda plots
     - run: python3 SCRIPTS/eda_plots.py
-4. Run preprocess.py to download the image data and process it accordingly
+4. Run preprocess.py to check and split the image data
    - run: python3 SCRIPTS/preprocess.py
-   - This downloads all of the image data and then it separates it into the train, test, validation split, as well as gets all of the metadata
+   - This checks every image downloaded in step 2, combines the metadata into `DATA/rps_manifest.csv`, and separates the images into the train, validation, and test splits by person
 5. Now, run model.py
    - run: python3 SCRIPTS/model.py
    - This creates and trains the mobileNETv2 model, makes the confusion matrix, and evaluates the model classification results based on different number of layers that are retrained

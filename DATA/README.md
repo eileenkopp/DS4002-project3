@@ -3,7 +3,7 @@ This folder contains the data for our project of identifying rock, paper, scisso
 
 | File | Description |
 |---|---|
-| `rps_data` | contains 3 sub-folders (one fore each gesture) that contain the images used during our model training, also contains 3 metadata files about each image per gesture stored in a csv (ex: `rock` (folder), `rock_meta.csv`). Created by `SCRIPTS/preprocess.py`  |
+| `rps_data` | contains 3 sub-folders (one fore each gesture) that contain the images used during our model training, also contains 3 metadata files about each image per gesture stored in a csv (ex: `rock` (folder), `rock_meta.csv`). Created by `SCRIPTS/eda.py`  |
 | `rps_manifest.csv` | csv file containing all information about every single image location and use: path, label, user_id, hagrid information, split (train vs. val vs. test), and brightness/sharpness of image. Created by `SCRIPTS/preprocess.py`. |
 | `annotations.zip` | **Too large to upload**. Zip file containing all of the metadata of every single image in the HaGRIDv2 dataset. Created by `SCRIPTS/eda.py`. |
 | `ann/annotation` | **Too large to upload**. The extracted contents of annotation.zip, see the original data dictionary table for what values it contained. Folder structure Created by `SCRIPTS/eda.py`. |

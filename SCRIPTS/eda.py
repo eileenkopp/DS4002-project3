@@ -1,4 +1,9 @@
-"""Download HaGRID annotations and save cropped rock/paper/scissors images locally."""
+"""Download HaGRID annotations and save cropped rock/paper/scissors images locally.
+
+Downloads the annotation files, samples 1,500 images per gesture (fist, palm, peace),
+crops each hand, resizes it to 224 x 224, and saves the images and a metadata CSV
+per gesture in DATA/rps_data. Run from the project root: python3 SCRIPTS/eda.py
+"""
 
 import argparse
 from urllib.request import urlretrieve
@@ -10,11 +15,13 @@ from pathlib import Path
 from PIL import Image
 import pandas as pd
 
+# HaGRID gesture -> our label. HaGRID's own "rock" class is the "rock on" sign, not a fist, so it is left out.
 GESTURE_MAP = {"fist": "rock", "palm": "paper", "peace": "scissors"}
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT_ROOT / "DATA"
 ANN_DIR = DATA_DIR / "ann"
 OUT = DATA_DIR / "rps_data"
+# Download links from the HaGRID GitHub README (annotations, and one image archive per gesture).
 ANNOTATIONS_URL = "https://rndml-team-cv.obs.ru-moscow-1.hc.sbercloud.ru/datasets/hagrid_v2/annotations_with_landmarks/annotations.zip"
 BASE = "https://rndml-team-cv.obs.ru-moscow-1.hc.sbercloud.ru/datasets/hagrid/hagrid_dataset_new_554800/hagrid_dataset"
 
@@ -46,8 +53,10 @@ def process(gesture, n_images=1500, pad=0.15):
     label = GESTURE_MAP[gesture]
     (OUT / label).mkdir(parents=True, exist_ok=True)
     rows = []
+        # Download only the sampled images, not the whole ~40 GB archive.
     with RemoteZip(f"{BASE}/{gesture}.zip") as z:
         names = {Path(n).stem: n for n in z.namelist() if n.endswith(".jpg")}
+                # Fixed seed so the same images are picked every run.
         keys = [k for k in ann if k in names]
         random.seed(0); random.shuffle(keys)
         for k in keys[:n_images]:
@@ -57,13 +66,15 @@ def process(gesture, n_images=1500, pad=0.15):
             for i, (box, lab) in enumerate(zip(a["bboxes"], a["labels"])):
                 if lab != gesture:
                     continue
+                # Boxes are fractions of the image size; convert to pixels with 15% padding, kept inside the photo.
                 x, y, w, h = box
                 x0, y0 = max(0, (x - pad*w)*W), max(0, (y - pad*h)*H)
                 x1, y1 = min(W, (x + w + pad*w)*W), min(H, (y + h + pad*h)*H)
-                dest = f"{OUT}/{label}/{k}_{i}.jpg"
-                os.makedirs(os.path.dirname(dest), exist_ok=True)
+                dest = OUT / label / f"{k}_{i}.jpg"
+                os.makedirs(dest.parent, exist_ok=True)
                 img.crop((x0, y0, x1, y1)).resize((224, 224)).save(dest, quality=90)
-                rows.append({"file": dest, "label": label, "user_id": a.get("user_id")})
+                # Save the path relative to the project folder so it works on any computer.
+                rows.append({"file": dest.relative_to(PROJECT_ROOT).as_posix(), "label": label, "user_id": a.get("user_id")})
     pd.DataFrame(rows, columns=["file", "label", "user_id"]).to_csv(f"{OUT}/{label}_meta.csv", index=False)
     print(gesture, "→", label, ":", len(rows), "hand images saved")
 
