@@ -53,10 +53,10 @@ def process(gesture, n_images=1500, pad=0.15):
     label = GESTURE_MAP[gesture]
     (OUT / label).mkdir(parents=True, exist_ok=True)
     rows = []
-        # Download only the sampled images, not the whole ~40 GB archive.
+    # Download only the sampled images, not the whole ~40 GB archive.
     with RemoteZip(f"{BASE}/{gesture}.zip") as z:
         names = {Path(n).stem: n for n in z.namelist() if n.endswith(".jpg")}
-                # Fixed seed so the same images are picked every run.
+        # Fixed seed so the same images are picked every run.
         keys = [k for k in ann if k in names]
         random.seed(0); random.shuffle(keys)
         for k in keys[:n_images]:
