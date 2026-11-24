@@ -75,6 +75,13 @@ The platform we used:
 5. Now, run model.py
    - run: python3 SCRIPTS/model.py
    - This creates and trains the mobileNETv2 model, makes the confusion matrix, and evaluates the model classification results based on different number of layers that are retrained
+   - Expected results: the terminal should show
+     - Images - train: 3177, val: 694, test: 629
+     - a validation table where fine-tuning the top 50 layers has the lowest validation loss (about 0.015), followed by "Keeping the top 50 layers"
+     - test accuracy of about 0.994, with recall of about 0.996 for rock, 0.984 for paper, and 1.000 for scissors, and True for both the 80% accuracy and 70% recall goals
+     - a majority-class baseline of about 0.356 (always predicting rock)
+   - Files saved to OUTPUT: rps_mobilenetv2.keras, confusion_matrix.png, classification_report.csv, fine_tune_search.csv
+   - Numbers may differ slightly between computers, but test accuracy should stay well above 80%
 6. Finally, run the game
    - run: python3 SCRIPTS/rps_game.py
    - This loads the game and you can play, have fun! Make sure that your gesture fits inside the outlined box, for example if you hand is doing paper but you just have your palm in the box and fingers outside of it that will mess with the classification
